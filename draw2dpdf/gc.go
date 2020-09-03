@@ -57,6 +57,29 @@ func NewPdf(orientationStr, unitStr, sizeStr string) *gofpdf.Fpdf {
 	return pdf
 }
 
+// NewPdfCustom creates a new custom sized pdf document with the draw2d fontfolder, adds
+// a page and set fill color to white.
+func NewPdfCustom(orientationStr, unitStr string, width, height float64) *gofpdf.Fpdf {
+	pdf := gofpdf.NewCustom(&gofpdf.InitType{
+		FontDirStr:     draw2d.GetFontFolder(),
+		OrientationStr: orientationStr,
+		UnitStr:        unitStr,
+		SizeStr:        "custom",
+		Size: gofpdf.SizeType{
+			Wd: width,
+			Ht: height,
+		},
+	})
+	// to be compatible with draw2d
+	pdf.SetMargins(0, 0, 0)
+	pdf.SetDrawColor(0, 0, 0)
+	pdf.SetFillColor(255, 255, 255)
+	pdf.SetLineCapStyle("round")
+	pdf.SetLineJoinStyle("round")
+	pdf.SetLineWidth(1)
+	pdf.AddPage()
+	return pdf
+}
 // rgb converts a color (used by draw2d) into 3 int (used by gofpdf)
 func rgb(c color.Color) (int, int, int) {
 	r, g, b, _ := c.RGBA()
